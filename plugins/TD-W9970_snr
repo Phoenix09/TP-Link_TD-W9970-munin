@@ -1,0 +1,57 @@
+#!/bin/sh
+# -*- sh -*-
+
+statsfile=${statsfile:-/var/lib/munin/plugin-state/TP-Link_TD-W9970-munin-output.txt}
+
+: << =cut
+
+=head1 NAME
+
+Line Stats - Plugin to get TP-Link TD-W9970 line stats
+
+=head1 NOTES
+
+Fetches current SNR
+
+=head1 AUTHOR
+
+Adam Smith
+Modified for TP-Link TD-W9970 by Phoenix09
+
+=head1 LICENSE
+
+GPLv3
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+if [ "$1" = "autoconf" ]; then
+	echo yes 
+	exit 0
+fi
+
+if [ "$1" = "config" ]; then
+	echo 'graph_title SNR Margin (dB)'
+	echo 'graph_args --base 1000'
+	echo 'graph_vlabel SNR Margin (dB)'
+	echo 'graph_category TD-W9970'
+	echo 'graph_scale no'
+	echo 'graph_order upstream downstream'
+	echo 'downstream.label Downstream'
+	echo 'downstream.draw LINE'
+	echo 'upstream.label Upstream'
+	echo 'upstream.draw LINE'
+	exit 0
+fi
+
+echo -n "upstream.value "
+awk -F = '/upstreamNoiseMargin=/ {print $2/10}' $statsfile
+
+echo -n "downstream.value "
+awk -F = '/downstreamNoiseMargin=/ {print $2/10}' $statsfile
+
+exit 0

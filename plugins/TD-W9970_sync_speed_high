@@ -1,0 +1,70 @@
+#!/bin/sh
+# -*- sh -*-
+
+statsfile=${statsfile:-/var/lib/munin/plugin-state/TP-Link_TD-W9970-munin-output.txt}
+
+: << =cut
+
+=head1 NAME
+
+Line Stats - Plugin to get TP-Link TD-W9970 line stats
+
+=head1 NOTES
+
+Fetches current sync speed
+
+=head1 AUTHOR
+
+Adam Smith
+Modified for TP-Link TD-W9970 by Phoenix09
+
+=head1 LICENSE
+
+GPLv3
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+if [ "$1" = "autoconf" ]; then
+	echo yes 
+	exit 0
+fi
+
+if [ "$1" = "config" ]; then
+	echo "graph_title Attainable vs Current Sync Speed (High res)"
+	echo 'graph_args --base 1000'
+	echo 'graph_vlabel Sync Rate Actual (-) Attainable (+)'
+	echo 'graph_category TD-W9970'
+	echo 'graph_scale yes'
+	echo 'downstream.label Downstream'
+	echo 'downstream.draw LINE'
+	echo 'downstream.graph no'
+	echo 'upstream.label Upstream'
+	echo 'upstream.draw LINE'
+	echo 'upstream.graph no'
+	echo 'maxdownstream.label Downstream'
+	echo 'maxdownstream.draw AREA'
+	echo 'maxdownstream.negative downstream'
+	echo 'maxupstream.label Upstream'
+	echo 'maxupstream.draw AREA'
+	echo 'maxupstream.negative upstream'
+	exit 0
+fi
+
+echo -n "maxdownstream.value "
+awk -F = '/downstreamMaxRate=/ {print $2*1000}' $statsfile
+
+echo -n "downstream.value "
+awk -F = '/downstreamCurrRate=/ {print $2*1000}' $statsfile
+
+echo -n "maxupstream.value "
+awk -F = '/upstreamMaxRate=/ {print $2*1000}' $statsfile
+
+echo -n "upstream.value "
+awk -F = '/upstreamCurrRate=/ {print $2*1000}' $statsfile
+
+exit 0

@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+set send_slow {1 .01}
+proc send {arg} {
+	sleep .1
+	exp_send -s -- $arg
+}
+
+set timeout -1
+
+spawn telnet 192.168.1.1
+expect "username:"
+send "admin\n"
+
+expect "password:"
+send "admin\n"
+
+expect "TP-LINK(conf)#"
+send "adsl show info\n"
+
+expect "TP-LINK(conf)#"
+send "logout\n"
