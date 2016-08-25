@@ -5,17 +5,26 @@ proc send {arg} {
 	exp_send -s -- $arg
 }
 
-set timeout -1
+proc myexpect {arg} {
+	expect {
+		$arg {}
+		timeout exit
+	}
+}
 
-spawn telnet 192.168.1.1
-expect "username:"
+set timeout 60
+
+spawn telnet 192.168.2.1
+myexpect "username:"
 send "admin\n"
 
-expect "password:"
+myexpect "password:"
 send "admin\n"
 
-expect "TP-LINK(conf)#"
+myexpect "TP-LINK(conf)#"
 send "adsl show info\n"
 
-expect "TP-LINK(conf)#"
+myexpect "TP-LINK(conf)#"
 send "logout\n"
+
+expect eof
