@@ -23,7 +23,7 @@ If you need to use a different directory you may need to modify the scripts to s
 the munin plugins directory. Or, copy and paste the following:
 
     ```shell
-    ln -s /etc/munin/TP-Link_TD-W9970/plugins/TD-W9970_* /etc/munin/plugins
+    ln -s /etc/munin/TP-Link_TD-W9970-munin/plugins/TD-W9970_* /etc/munin/plugins
     ```
 
 4. The `TD-W9970.expect` script is configured to connect to 192.168.1.1 and use
